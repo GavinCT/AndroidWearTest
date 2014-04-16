@@ -6,9 +6,46 @@
     android:gravity="center" >
 
     <Button
-        android:id="@+id/send_message"
+        android:id="@+id/send_normal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="发送消息" />
+        android:onClick="onClick"
+        android:text="Normal " />
+    <Button
+        android:id="@+id/send_normal_hide_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="Normal(hide icon)" />
+    <Button
+        android:id="@+id/send_big"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="Big" />
+    <Button
+        android:id="@+id/send_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="input" />
+    <Button
+        android:id="@+id/send_input2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="input2" />
+    <Button
+        android:id="@+id/send_add_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="add page" />
+    <Button
+        android:id="@+id/send_set_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="set group" />
 
 </LinearLayout>
