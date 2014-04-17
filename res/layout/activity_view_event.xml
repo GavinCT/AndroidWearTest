@@ -6,10 +6,11 @@
     android:gravity="center">
 
     <TextView
+        android:padding="3dip"
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="消息1"
+        android:text="我在响应ing"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </LinearLayout>

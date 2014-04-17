@@ -13,7 +13,11 @@ import android.preview.support.wearable.notifications.WearableNotifications.Acti
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.BigTextStyle;
 import android.view.View;
-
+/**
+ * adb -d forward tcp:5601 tcp:5601
+ * @author tong
+ *
+ */
 public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +29,8 @@ public class MainActivity extends Activity {
 		case R.id.send_normal:
 			sendNormal();
 			break;
-		case R.id.send_big:
-			sendBig();
+		case R.id.add_action:
+			addAction();
 			break;
 		case R.id.send_normal_hide_icon:
 			sendNormalHideIcon();
@@ -48,71 +52,39 @@ public class MainActivity extends Activity {
 		}
 	}
 	private void sendNormal(){
-		int notificationId = 001;
-		// Build intent for notification content
-		Intent viewIntent = new Intent(this, ViewEventActivity.class);
-//		viewIntent.putExtra(EXTRA_EVENT_ID, eventId);
-		PendingIntent viewPendingIntent =
-		        PendingIntent.getActivity(this, 0, viewIntent, 0);
+		PendingIntent viewPendingIntent = getActivityPendingIntent("奶茶妹最新新闻：xxxx");
 		NotificationCompat.Builder notificationBuilder =
 		        new NotificationCompat.Builder(this)
-		        .setSmallIcon(R.drawable.ic_launcher)
+		        .setSmallIcon(R.drawable.wiz_logo)   //不设置居然发不出去？？？？  只能通过下面的方式隐藏。
 		        .setLargeIcon(BitmapFactory.decodeResource(
 		                getResources(), R.drawable.background))
 		        .setContentTitle("标题：奶茶妹")
 		        .setContentText("XXXXXXXXX...\n ")
-		        .setContentIntent(viewPendingIntent)
-		        .addAction(R.drawable.ic_launcher,
-                "查看更多", viewPendingIntent);
+		        .setContentIntent(viewPendingIntent);
 
-		// Get an instance of the NotificationManager service
-		NotificationManagerCompat notificationManager =
-		        NotificationManagerCompat.from(this);
-
-		// Build the notification and issues it with notification manager.
-		notificationManager.notify(notificationId, notificationBuilder.build());
+		notifyMessage(1, notificationBuilder.build());
 	}
 	private void sendNormalHideIcon(){
-		int notificationId = 003;
-		// Build intent for notification content
-		Intent viewIntent = new Intent(this, ViewEventActivity.class);
-//		viewIntent.putExtra(EXTRA_EVENT_ID, eventId);
-		PendingIntent viewPendingIntent =
-				PendingIntent.getActivity(this, 0, viewIntent, 0);
+		PendingIntent viewPendingIntent = getActivityPendingIntent("奶茶妹最新新闻：xxxx");
 		NotificationCompat.Builder notificationBuilder =
 				new NotificationCompat.Builder(this)
-		.setSmallIcon(R.drawable.ic_launcher)
+		.setSmallIcon(R.drawable.wiz_logo)
 		.setLargeIcon(BitmapFactory.decodeResource(
 				getResources(), R.drawable.background))
 				.setContentTitle("标题：奶茶妹")
 				.setContentText("XXXXXXXXX...\n ")
-				.setContentIntent(viewPendingIntent)
-				.addAction(R.drawable.ic_launcher,
-						"查看更多", viewPendingIntent);
+				.setContentIntent(viewPendingIntent);
 		
 		Notification notification =
 		        new WearableNotifications.Builder(notificationBuilder)
 		        .setHintHideIcon(true)
 		        .build();
-		// Get an instance of the NotificationManager service
-		/*
-		 * If you instead use the framework's NotificationManager, 
-		 * some features from WearableNotifications.Builder will not work
-		 */
-		NotificationManagerCompat notificationManager =
-				NotificationManagerCompat.from(this);
-		
-		// Build the notification and issues it with notification manager.
-		notificationManager.notify(notificationId, notification);
+		notifyMessage(2, notification);
 		
 	}
-	private void sendBig(){
-		int notificationId = 002;
-		// Build intent for notification content
-		Intent viewIntent = new Intent(this, ViewEventActivity.class);
-//		viewIntent.putExtra(EXTRA_EVENT_ID, eventId);
-		PendingIntent viewPendingIntent =
-				PendingIntent.getActivity(this, 0, viewIntent, 0);
+	private void addAction(){
+		PendingIntent viewPendingIntent = getActivityPendingIntent("马伊俐最新新闻：xxxx");
+		PendingIntent viewPendingIntent2 = getActivityPendingIntent("姚笛最新新闻：xxxx");
 		
 		
 		BigTextStyle bigStyle = new NotificationCompat.BigTextStyle();
@@ -120,46 +92,82 @@ public class MainActivity extends Activity {
 		
 		NotificationCompat.Builder notificationBuilder =
 				new NotificationCompat.Builder(this)
-		.setSmallIcon(R.drawable.ic_launcher)
+		.setSmallIcon(R.drawable.wiz_logo)
 		.setLargeIcon(BitmapFactory.decodeResource(
 				getResources(), R.drawable.background2))
 				.setContentTitle("文章")
 				//设置长文章后设置此参数无效。
 				.setContentText("XXXXXXXXX...\n ")
 				.setContentIntent(viewPendingIntent)
-				.addAction(R.drawable.ic_launcher,
-						"姚笛新闻在这里", viewPendingIntent)
-				.addAction(R.drawable.ic_launcher,
+				.addAction(R.drawable.more,
+						"姚笛新闻在这里", viewPendingIntent2)
+				.addAction(R.drawable.more,
 						"马伊俐新闻在这里", viewPendingIntent)
 				.setStyle(bigStyle);
-		
-		// Get an instance of the NotificationManager service
-		NotificationManagerCompat notificationManager =
-				NotificationManagerCompat.from(this);
-		
-		// Build the notification and issues it with notification manager.
-		notificationManager.notify(notificationId, notificationBuilder.build());
+		notifyMessage(3, notificationBuilder.build());
 	}
+	private void addPage(){
+		PendingIntent replyPendingIntent = getActivityPendingIntent("文章详细新闻");
+		// Create builder for the main notification
+		NotificationCompat.Builder notificationBuilder =
+		        new NotificationCompat.Builder(this)
+		        .setSmallIcon(R.drawable.wiz_logo)
+		        .setContentTitle("文章")
+		        .setContentText("xxxx\nxxxx\nxxxx\nxxxx\nxxxx\nxxxx\nxxxx\nxxxx\nxxxx\nxxxx\nxxxx\n")
+		        .setContentIntent(replyPendingIntent);
+
+		// Create a big text style for the second page
+		BigTextStyle secondPageStyle = new NotificationCompat.BigTextStyle();
+		secondPageStyle.setBigContentTitle("马伊俐")
+		               .bigText("xxxx\nxxxx\nxxxx\nxxxx\nxxxx\nxxxx\nxxxx\nxxxx\nxxxx\nxxxx\nxxxx\n");
+
+		// Create second page notification
+		Notification secondPageNotification =
+		        new NotificationCompat.Builder(this)
+		        .setStyle(secondPageStyle)
+		        .build();
+		
+		// Create a big text style for the second page
+		BigTextStyle thirdPageStyle = new NotificationCompat.BigTextStyle();
+		thirdPageStyle.setBigContentTitle("姚笛")
+		.bigText("xxxx\nxxxx\nxxxx\nxxxx\nxxxx\nxxxx\nxxxx\nxxxx\nxxxx\nxxxx\nxxxx\n");
+		
+		// Create second page notification
+		Notification thirdPageNotification =
+				new NotificationCompat.Builder(this)
+		.setStyle(thirdPageStyle)
+		.build();
+
+		// Create main notification and add the second page
+		Notification pageNotification =
+		        new WearableNotifications.Builder(notificationBuilder)
+		        .addPage(secondPageNotification)
+		        .addPage(thirdPageNotification)
+		        .build();
+
+		notifyMessage(6, pageNotification);
+	}
+	
 	// Key for the string that's delivered in the action's intent
-	private static final String EXTRA_VOICE_REPLY = "extra_voice_reply";
+	public static final String EXTRA_VOICE_REPLY = "extra_voice_reply";
+	/**
+	 * Receive Voice Input for the Primary Action
+	 */
 	private void sendInput(){
-		// Create intent for reply action
-		Intent replyIntent = new Intent(this, ViewEventActivity.class);
-		PendingIntent replyPendingIntent =
-		        PendingIntent.getActivity(this, 0, replyIntent, 0);
+		PendingIntent replyPendingIntent = getActivityPendingIntent("这个必须改");
 
 		// Build the notification
 		NotificationCompat.Builder replyNotificationBuilder =
 		        new NotificationCompat.Builder(this)
-		        .setSmallIcon(R.drawable.ic_launcher)
-		        .setContentTitle("Message from Travis")
-		        .setContentText("I love key lime pie!")
+		        .setSmallIcon(R.drawable.wiz_logo)
+		        .setContentTitle("来自yxl的信息")
+		        .setContentText("下周改版")
 		        .setContentIntent(replyPendingIntent);
 
 		String[] replyChoices = getResources().getStringArray(R.array.reply_choices);
 		// Create the remote input
 		RemoteInput remoteInput = new RemoteInput.Builder(EXTRA_VOICE_REPLY)
-		        .setLabel("报告老板")
+		        .setLabel("回复")
 		        .setChoices(replyChoices)
 		        .build();
 
@@ -169,36 +177,31 @@ public class MainActivity extends Activity {
 		        .addRemoteInputForContentIntent(remoteInput)
 		        .build();
 		
-		// Get an instance of the NotificationManager service
-		NotificationManagerCompat notificationManager =
-				NotificationManagerCompat.from(this);
-		
-		// Build the notification and issues it with notification manager.
-		notificationManager.notify(4, replyNotification);
+		notifyMessage(4, replyNotification);
 	}
+	/**
+	 * Receive Voice Input for a Secondary Action
+	 */
 	private void sendInput2(){
-		// Create intent for reply action
-		Intent replyIntent = new Intent(this, ViewEventActivity.class);
-		PendingIntent replyPendingIntent =
-		        PendingIntent.getActivity(this, 0, replyIntent, 0);
+		PendingIntent replyPendingIntent = getActivityPendingIntent("这个必须改");
 
 		// Build the notification
 		NotificationCompat.Builder replyNotificationBuilder =
 		        new NotificationCompat.Builder(this)
-		        .setSmallIcon(R.drawable.ic_launcher)
-		        .setContentTitle("Message from Travis")
-		        .setContentText("I love key lime pie!")
+		        .setSmallIcon(R.drawable.wiz_logo)
+		        .setContentTitle("来自yxl的信息")
+		        .setContentText("下周改版")
 		        .setContentIntent(replyPendingIntent);
 
 		String[] replyChoices = getResources().getStringArray(R.array.reply_choices);
 		// Create the remote input
 		RemoteInput remoteInput = new RemoteInput.Builder(EXTRA_VOICE_REPLY)
-		        .setLabel("报告老板")
+		        .setLabel("回复")
 		        .setChoices(replyChoices)
 		        .build();
 		// Create the notification action and add remote input
-		Action replyAction = new Action.Builder(R.drawable.ic_launcher,
-		        "Reply", replyPendingIntent)
+		Action replyAction = new Action.Builder(R.drawable.comment,
+		        "报告经理", replyPendingIntent)
 		        .addRemoteInput(remoteInput)
 		        .build();
 
@@ -207,49 +210,11 @@ public class MainActivity extends Activity {
 		        new WearableNotifications.Builder(replyNotificationBuilder)
 		        .addAction(replyAction)
 		        .build();
-		// Get an instance of the NotificationManager service
-		NotificationManagerCompat notificationManager =
-				NotificationManagerCompat.from(this);
-		
-		// Build the notification and issues it with notification manager.
-		notificationManager.notify(5, replyNotification);
-	}
-	private void addPage(){
-		// Create intent for reply action
-		Intent replyIntent = new Intent(this, ViewEventActivity.class);
-		PendingIntent replyPendingIntent =
-		        PendingIntent.getActivity(this, 0, replyIntent, 0);
-		// Create builder for the main notification
-		NotificationCompat.Builder notificationBuilder =
-		        new NotificationCompat.Builder(this)
-		        .setSmallIcon(R.drawable.ic_launcher)
-		        .setContentTitle("Page 1")
-		        .setContentText("Short message")
-		        .setContentIntent(replyPendingIntent);
 
-		// Create a big text style for the second page
-		BigTextStyle secondPageStyle = new NotificationCompat.BigTextStyle();
-		secondPageStyle.setBigContentTitle("Page 2")
-		               .bigText("A lot of text...");
-
-		// Create second page notification
-		Notification secondPageNotification =
-		        new NotificationCompat.Builder(this)
-		        .setStyle(secondPageStyle)
-		        .build();
-
-		// Create main notification and add the second page
-		Notification twoPageNotification =
-		        new WearableNotifications.Builder(notificationBuilder)
-		        .addPage(secondPageNotification)
-		        .build();
-		// Get an instance of the NotificationManager service
-		NotificationManagerCompat notificationManager =
-				NotificationManagerCompat.from(this);
-		
-		// Build the notification and issues it with notification manager.
-		notificationManager.notify(6, twoPageNotification);
-	}
+		notifyMessage(5, replyNotification);
+	}	
+/*****************************************************************************************************/
+	
 	final static String GROUP_KEY_EMAILS = "group_key_emails";
 	int i = 0;
 	/**
@@ -259,14 +224,14 @@ public class MainActivity extends Activity {
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
 		         .setContentTitle("New mail from kk"+ i)
 		         .setContentText("xxxxx")
-		         .setSmallIcon(R.drawable.ic_launcher);
+		         .setSmallIcon(R.drawable.wiz_logo);
 		Notification notif = new WearableNotifications.Builder(builder)
 		.setGroup(GROUP_KEY_EMAILS, WearableNotifications.GROUP_ORDER_SUMMARY)
 		.build();
 		NotificationCompat.Builder builder2 = new NotificationCompat.Builder(this)
 		.setContentTitle("New mail from kk2"+ i)
 		.setContentText("xxxxx")
-		.setSmallIcon(R.drawable.ic_launcher);
+		.setSmallIcon(R.drawable.wiz_logo);
 		Notification notif2 = new WearableNotifications.Builder(builder2)
 		.setGroup(GROUP_KEY_EMAILS, WearableNotifications.GROUP_ORDER_SUMMARY)
 		.build();
@@ -277,5 +242,28 @@ public class MainActivity extends Activity {
 		// Build the notification and issues it with notification manager.
 		notificationManager.notify(7, notif);
 		notificationManager.notify(8, notif2);
+	}
+	
+/*****************************************************************************************************/
+	private void notifyMessage(int notificationId, Notification notification) {
+		/*
+		 * If you instead use the framework's NotificationManager, 
+		 * some features from WearableNotifications.Builder will not work
+		 */
+		// Get an instance of the NotificationManager service
+		NotificationManagerCompat notificationManager =
+		        NotificationManagerCompat.from(this);
+		// Build the notification and issues it with notification manager.
+		notificationManager.notify(notificationId, notification);
+	}
+	//
+	public static final String EXTRA_EVENT_ID = "context";
+	private PendingIntent getActivityPendingIntent(String text) {
+		// Build intent for notification content
+		Intent viewIntent = new Intent(this, ViewEventActivity.class);
+		viewIntent.putExtra(EXTRA_EVENT_ID, text);
+		PendingIntent viewPendingIntent =
+		        PendingIntent.getActivity(this, 0, viewIntent, 0);
+		return viewPendingIntent;
 	}
 }

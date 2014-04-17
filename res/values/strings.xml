@@ -3,9 +3,9 @@
     <string name="app_name">AndroidWearTest</string>
 
     <string-array name="reply_choices">
-        <item>Yes</item>
-        <item>No</item>
-        <item>Maybe</item>
+        <item>好的</item>
+        <item>好(ni)的(mei)</item>
+        <item>呵呵</item>
     </string-array>
 
 </resources>
