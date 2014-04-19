@@ -1,5 +1,7 @@
 package com.czt.androidweartest;
 
+import java.util.Random;
+
 import android.app.Activity;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -154,12 +156,14 @@ public class MainActivity extends Activity {
 	 * Receive Voice Input for the Primary Action
 	 */
 	private void sendInput(){
-		PendingIntent replyPendingIntent = getActivityPendingIntent("这个必须改");
+		PendingIntent replyPendingIntent = getActivityPendingIntent("");
 
 		// Build the notification
 		NotificationCompat.Builder replyNotificationBuilder =
 		        new NotificationCompat.Builder(this)
 		        .setSmallIcon(R.drawable.wiz_logo)
+		        .setLargeIcon(BitmapFactory.decodeResource(
+		                getResources(), R.drawable.yxl))
 		        .setContentTitle("来自yxl的信息")
 		        .setContentText("下周改版")
 		        .setContentIntent(replyPendingIntent);
@@ -183,12 +187,14 @@ public class MainActivity extends Activity {
 	 * Receive Voice Input for a Secondary Action
 	 */
 	private void sendInput2(){
-		PendingIntent replyPendingIntent = getActivityPendingIntent("这个必须改");
+		PendingIntent replyPendingIntent = getActivityPendingIntent("");
 
 		// Build the notification
 		NotificationCompat.Builder replyNotificationBuilder =
 		        new NotificationCompat.Builder(this)
 		        .setSmallIcon(R.drawable.wiz_logo)
+		        .setLargeIcon(BitmapFactory.decodeResource(
+		                getResources(), R.drawable.yxl))
 		        .setContentTitle("来自yxl的信息")
 		        .setContentText("下周改版")
 		        .setContentIntent(replyPendingIntent);
@@ -257,13 +263,15 @@ public class MainActivity extends Activity {
 		notificationManager.notify(notificationId, notification);
 	}
 	//
+	private int mRequestCode = 0 ;
 	public static final String EXTRA_EVENT_ID = "context";
 	private PendingIntent getActivityPendingIntent(String text) {
 		// Build intent for notification content
 		Intent viewIntent = new Intent(this, ViewEventActivity.class);
 		viewIntent.putExtra(EXTRA_EVENT_ID, text);
 		PendingIntent viewPendingIntent =
-		        PendingIntent.getActivity(this, 0, viewIntent, 0);
+		        PendingIntent.getActivity(this,  mRequestCode, viewIntent, 0);
+		mRequestCode++;
 		return viewPendingIntent;
 	}
 }
